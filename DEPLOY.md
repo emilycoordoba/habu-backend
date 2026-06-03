@@ -66,6 +66,6 @@ gh repo create sistema-gestion-inmobiliaria-backend --public --source=. --push
 
 ## Resumen de URLs (rellénalas al desplegar)
 
-- Backend (Render): `____________________`
+- Backend (Render): `https://habu-app-backend.onrender.com` ✅ desplegado
 - Frontend (Vercel): `____________________`
 - Repo backend: `https://github.com/emilycodesoft/sistema-gestion-inmobiliaria-backend`
