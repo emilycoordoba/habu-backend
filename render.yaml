@@ -1,0 +1,14 @@
+# Blueprint de Render — despliega el backend con un clic desde el repo.
+# En Render: New > Blueprint > conecta este repositorio.
+services:
+  - type: web
+    name: habu-backend
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: JWT_SECRET
+        generateValue: true
+      - key: NODE_VERSION
+        value: "22"
