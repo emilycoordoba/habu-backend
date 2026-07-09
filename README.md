@@ -1,46 +1,53 @@
-# Backend — Sistema de Gestión Inmobiliaria (Habu)
+# Real Estate Management System (Habu) — Backend
 
-API REST en **Node + Express + TypeScript** que implementa el contrato de endpoints
-consumido por el frontend (Next.js). Datos **en memoria**, sembrados desde los mocks
-del frontend, de modo que las formas de respuesta calzan al 100% con lo que la UI espera.
+REST API in **Node + Express + TypeScript** that implements the endpoint contract
+consumed by the frontend (Next.js). Data is held **in memory**, seeded from the
+frontend mocks, so response shapes match exactly what the UI expects.
 
-## Usuarios de prueba (para que el profesor inicie sesión)
+> Business/domain values are in Spanish on purpose — Habu models a Colombian real
+> estate agency. This README is in English for reviewers.
 
-| Rol           | Correo               | Contraseña |
-|---------------|----------------------|------------|
-| Administrador | `admin@habu.com.co`  | `admin123` |
-| Asesor        | `asesor@habu.com.co` | `asesor123`|
+## Test users
 
-## Correr en local
+| Role | Email | Password |
+|---|---|---|
+| Administrator | `admin@habu.com.co` | `admin123` |
+| Advisor | `asesor@habu.com.co` | `asesor123` |
+
+## Run locally
 
 ```bash
 npm install
 npm start        # http://localhost:4000
 ```
 
-Verificación rápida: abrir `http://localhost:4000/health` → debe responder `estado: ok`.
+Quick check: open `http://localhost:4000/health` → it should return `estado: ok`.
 
-## Arquitectura
+## Architecture
 
-- `src/index.ts` — servidor Express, CORS, rutas públicas vs protegidas, manejo de errores.
-- `src/lib/` — `auth` (JWT + usuarios sembrados), `http` (envoltura `{data}`/`{error}`, paginación), `upload` (multipart).
-- `src/store.ts` — **única fuente de datos en memoria**. Aislada a propósito: migrar a Postgres = reescribir solo este archivo.
-- `src/routes/` — un archivo por módulo (clientes, inmuebles, contratos, pagos, mantenimiento, chatbot, administración, cuenta, auth).
-- `src/seed/` — tipos y mocks copiados del frontend; son la semilla de datos.
+- `src/index.ts` — Express server, CORS, public vs protected routes, error handling.
+- `src/lib/` — `auth` (JWT + seeded users), `http` (`{data}`/`{error}` wrapper, pagination), `upload` (multipart).
+- `src/store.ts` — **the single in-memory data source.** Isolated on purpose: migrating to Postgres means rewriting only this file.
+- `src/routes/` — one file per module (clients, properties, contracts, payments, maintenance, chatbot, administration, account, auth).
+- `src/seed/` — types and mocks copied from the frontend; they seed the data.
 
-## Contrato de respuesta
+## Response contract
 
-- Objeto único → `{ "data": { ... } }`
-- Listado → `{ "data": [ ... ], "total", "pagina", "totalPaginas", ...resumen }`
+- Single object → `{ "data": { ... } }`
+- List → `{ "data": [ ... ], "total", "pagina", "totalPaginas", ...summary }`
 - Error → `{ "error": { "mensaje": "..." } }`
-- Login → `{ "token", "usuario" }` (sin envoltura)
+- Login → `{ "token", "usuario" }` (no wrapper)
 
-## Despliegue
+## Deployment
 
-Ver [`DEPLOY.md`](./DEPLOY.md).
+Deployed on Render (free tier). See [`DEPLOY.md`](./DEPLOY.md) for the full guide.
 
-## Nota
+> On Render's free tier the service sleeps after ~15 min of inactivity; the first
+> request after it sleeps takes ~30–50 s. Hit `/health` a minute before a demo to
+> wake it up.
 
-Los datos viven en memoria: las creaciones/ediciones persisten mientras el proceso
-esté vivo y se reinician al reiniciar el servicio. Para persistencia real, reemplazar
-`src/store.ts` por una capa contra Postgres.
+## Note on persistence
+
+Data lives in memory: creations/edits persist while the process is alive and reset
+when the service restarts. For real persistence, replace `src/store.ts` with a
+Postgres-backed layer — nothing else needs to change.
